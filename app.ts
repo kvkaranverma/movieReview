@@ -1,40 +1,63 @@
-
-
-class Movie {
-
-    constructor(public name: string, public coverImage: string,
-        public description: string, public review: any, public comments: any) {
-        
-    }
-
+interface MovieType {
+    name: string;
+    coverImage: string;
+    description: string;
+    review: [number, number, number, number, number];
+    comments: string[];
 }
 
-class MovieList {
-    private movie: Movie[] = [
-        new Movie('The theory of everything', 'abc.jpg', 'abc', [11, 2, 3, 4, 5], ['sdbfdjf']),
-        new Movie('The terminal', 'download.jpg', 'download', [0, 0, 0, 0, 0], ['sdbfdjf']),
-        new Movie('Hobbs and Shaw', 'abc.jpg', 'abc', [0, 0, 0, 0, 0], ['sdbfdjf']),
-        new Movie('The theory of everything', 'abc.jpg', 'abc', [0, 0, 0, 0, 0], ['sdbfdjf']),
-        new Movie('The terminal', 'download.jpg', 'download', [0, 0, 0, 0, 0], ['sdbfdjf']),
-        new Movie('Hobbs and Shaw', 'abc.jpg', 'abc', [0, 0, 0, 0, 0], ['sdbfdjf']),
+class MovieData {
+    protected movieList: MovieType[] = [
+        {
+            name: 'The theory of everything',
+            coverImage: 'abc.jpg',
+            description: 'abc',
+            review: [11, 2, 3, 4, 5],
+            comments: ['sdbfdjf']
+        },
+        {
+            name: 'The terminal',
+            coverImage: 'abc.jpg',
+            description: 'abc',
+            review: [11, 32, 3, 4, 5],
+            comments: ['sdbfdjf']
+        },
+        {
+            name: 'Hobbs and Shaw',
+            coverImage: 'download.jpg',
+            description: 'abc',
+            review: [11, 2, 33, 4, 5],
+            comments: ['sdbfdjf']
+        },
+        {
+            name: 'The Dark Knight',
+            coverImage: 'download.jpg',
+            description: 'abc',
+            review: [11, 2, 3, 4, 500],
+            comments: ['sdbfdjf']
+        }
+
     ];
+}
+
+class Movie extends MovieData {
 
     getMovieList() {
-        return this.movie;
+        return this.movieList;
     }
 
     getMovie(index: number) {
-        return this.movie[index];
+        return this.movieList[index];
     }
 
     addReview(index: number, ratingIndex: number) {
         
-        this.movie[index].review[ratingIndex - 1]++;
+        this.movieList[index].review[ratingIndex - 1]++;
     }
 
     getReview(index: number) {
         
-        let rating = this.movie[index].review;
+        let rating = this.movieList[index].review;
         var sum = 0;
         var div = 0;
         for(var i = 0; i < 5; i++) {
@@ -44,19 +67,21 @@ class MovieList {
             
         }
         
-        rating =  Number((sum/div).toFixed(1));
+        let avgRating =  Number((sum/div).toFixed(1));
         
-        if(isNaN(rating))
-            rating = 0;
+        if(isNaN(avgRating))
+            avgRating = 0;
         
-        return rating;
+        return avgRating;
     }
 }
 
 class App {
     
-    private movies: Movie[];
+    private movies: MovieType[] = [];
+    private movie: Movie;
     constructor() {
+        this.movie = new Movie();
         this.renderMovieList();
         this.eventBindings();
     }
@@ -84,62 +109,52 @@ class App {
         });
 
         let movieElements = document.querySelectorAll('.movie')!;
-        let _this: any = this;
-        
-        movieElements.forEach(function(movie) {
-            movie.addEventListener('click', () => {
-                
-                console.log(movie);
-                let movieId = Number(movie.getAttribute('movie-id'));
-                let movieDetails = movieList.getMovie(movieId);
-                let movieRating = movieList.getReview(movieId);
-                let movieDescription = document.getElementById('movieDescription')!;
-                movieDescription.classList.remove('d-none');
-               
-                movieDescription.appendChild(_this.generateMovieDescriptionStructure(movieId, movieDetails, movieRating));
-            });
-        });
+        movieElements.forEach((movie) => {
+            movie.addEventListener('click', () => this.generateMovieDescriptionStructure(movie));
+         });
+      
 
-        document.addEventListener('click', function(evt) {
-            
-            let ele = <HTMLElement>evt.target;
-            if(ele && ele.closest('.rating-value')) {
-                
-                let selectedRating = Number(ele.closest('.rating-value')!.getAttribute('value'));
-                let movieId = Number(ele.closest('#movieDetails')!.getAttribute('movie-index'));
-                movieList.addReview(movieId, selectedRating);
-                
-                let newRating = movieList.getReview(movieId);
-                document.getElementById('ratingValue')!.innerHTML = newRating.toString();
-                document.querySelector('[movie-id="'+movieId+'"]')!.getElementsByClassName('rating-value')[0].innerHTML = newRating.toString();
-            }
-        });
+        document.addEventListener('click', () => this.updateRating(event!));
         
     }
 
-    renderMovieList() {
-        this.movies = movieList.getMovieList();
+    private updateRating(evt: Event) {
+        let ele = <HTMLElement>evt.target;
+        if(ele && ele.closest('.rating-value')) {
+            
+            let selectedRating = Number(ele.closest('.rating-value')!.getAttribute('value'));
+            let movieId = Number(ele.closest('#movieDetails')!.getAttribute('movie-index'));
+            this.movie.addReview(movieId, selectedRating);
+            
+            let newRating = this.movie.getReview(movieId);
+            document.getElementById('ratingValue')!.innerHTML = newRating.toString();
+            document.querySelector('[movie-id="'+movieId+'"]')!.getElementsByClassName('rating-value')[0].innerHTML = newRating.toString();
+        }
+    }
+
+    private renderMovieList() {
+        this.movies = this.movie.getMovieList();
         let movieListContainer = document.getElementById('movieListContainer')!.getElementsByClassName('movie-list')[0]!;
         
         for(let counter = 0; counter < this.movies.length; counter++) {
-            let movieRating = movieList.getReview(counter);
+            let movieRating = this.movie.getReview(counter);
             movieListContainer.appendChild(this.generateMovieListStructure(counter, this.movies[counter].name, this.movies[counter].coverImage, movieRating));
         }
         
         console.log(this.movies)
     }
 
-    generateMovieListStructure(movieId: number, movieName: string, image: string, rating: string) {
-        let structure = '<a  class="movie" movie-id="'+ movieId +'">' +
-                            '<div class="">' +
-                                '<img src="images/'+ image +'">' +
-                                '<p>'+ movieName +'</p>' +
-                                '<div class="d-flex">' +
-                                    '<p>Rating</p>' +
-                                    '<p class="rating-value">'+ rating +'</p>'+
-                                '</div>'+
-                            '</div>'+
-                        '</a>';
+    private generateMovieListStructure(movieId: number, movieName: string, image: string, rating: number) {
+        let structure = `<a  class="movie" movie-id="${movieId}">
+                            <div class="">
+                                <img src="images/${image}">
+                                <p>${movieName}</p>
+                                <div class="d-flex">
+                                    <p>Rating</p>
+                                    <p class="rating-value">${rating}</p>
+                                </div>
+                            </div>
+                        </a>`;
                     
         let element = document.createElement('li');
         element.classList.add('movie-article');
@@ -147,33 +162,42 @@ class App {
         return element;
     }
 
-    generateMovieDescriptionStructure(movieId: number, movieDetails: Movie, movieRating: number) {
-        let structure = '<div id="movieDetails" class=" w-50" movie-index = "'+ movieId +'">' +
-                            '<div id="movieName"><h2>'+ movieDetails.name +'</h2></div>' +
-                            '<div id="movieDetails"><p>'+ movieDetails.description +'</p></div>' +
-                            '<div id="movieRating" class="d-flex">' +
-                                '<p class="d-inline">Rating: <span id="ratingValue">'+ movieRating +'</span></p> '+
-                                '<div id="rating" class="d-inline">' +
-                                    '<a class="rating-value" value="1"><i class="fa fa-star"></i></a>' +
-                                    '<a class="rating-value" value="2"><i class="fa fa-star"></i></a>' +
-                                    '<a class="rating-value" value="3"><i class="fa fa-star"></i></a>' +
-                                    '<a class="rating-value" value="4"><i class="fa fa-star"></i></a>' +
-                                    '<a class="rating-value" value="5"><i class="fa fa-star"></i></a>' +
-                                '</div>' +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="movie-image  w-50 d-flex justify-content-end">' +
-                            '<img src="images/'+ movieDetails.coverImage +'">' +
-                        '</div>';
+    private generateMovieDescriptionStructure(movieElement: Element ) {
+        
+        console.log(this.movie);
+        let movieId = Number(movieElement.getAttribute('movie-id'));
+        let movieDetails = this.movie.getMovie(movieId);
+        let movieRating = this.movie.getReview(movieId);
+        let movieDescription = document.getElementById('movieDescription')!;
+        movieDescription.classList.remove('d-none');
+         
+        
+        let structure = `<div id="movieDetails" class=" w-50" movie-index="${movieId}">
+                            <div id="movieName"><h2> ${movieDetails.name} </h2></div>
+                            <div id="movieDetails"><p> ${movieDetails.description} </p></div>
+                            <div id="movieRating" class="d-flex">
+                                <p class="d-inline">Rating: <span id="ratingValue"> ${movieRating} </span></p>
+                                <div id="rating" class="d-inline">
+                                    <a class="rating-value" value="1"><i class="fa fa-star"></i></a>
+                                    <a class="rating-value" value="2"><i class="fa fa-star"></i></a>
+                                    <a class="rating-value" value="3"><i class="fa fa-star"></i></a>
+                                    <a class="rating-value" value="4"><i class="fa fa-star"></i></a>
+                                    <a class="rating-value" value="5"><i class="fa fa-star"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="movie-image  w-50 d-flex justify-content-end">
+                            <img src="images/${movieDetails.coverImage}">
+                        </div>`;
 
         let element = document.createElement('div');
         element.classList.add('d-flex', 'justify-content-between');
         element.setAttribute('id', 'movieDescriptionContainer');
         element.innerHTML = structure;
-        return element;          
+        movieDescription.appendChild(element);     
+        
     }
 }
 
-let movieList = new MovieList();
-const a = new App();
-console.log('running')
+const app = new App();
+console.log('running');
