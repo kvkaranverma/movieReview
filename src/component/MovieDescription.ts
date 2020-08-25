@@ -5,35 +5,38 @@ export class MovieDescription{
     constructor() {
         this.movieService = MovieService.getInstance();
 
-        let movieElements = document.querySelectorAll('.movie')!;
-        movieElements.forEach((movie) => {
-            movie.addEventListener('click', () => this.generateMovieDescriptionStructure(movie));
-        });
+        document.addEventListener('click', () => this.bindEvents(event!));
 
-        document.addEventListener('click', () => this.updateRating(event!));
-
-        let closeDescription = document.getElementById('hideDescription')!;
+        let closeDescription = <HTMLButtonElement>document.getElementById('hideDescription')!;
         closeDescription.addEventListener('click', function() {
             let movieDescriptionContainer = document.getElementById('movieDescriptionContainer')!;
             movieDescriptionContainer.remove();
             
-            let movieDescription = document.getElementById('movieDescription')!;
+            let movieDescription = <HTMLDivElement>document.getElementById('movieDescription')!;
             movieDescription.classList.add('d-none');
         });
     }
 
-    private updateRating(evt: Event) {
+    private bindEvents(evt: Event) {
         let ele = <HTMLElement>evt.target;
         if(ele && ele.closest('.rating-value')) {
-            
-            let selectedRating = Number(ele.closest('.rating-value')!.getAttribute('value'));
-            let movieId = Number(ele.closest('#movieDetails')!.getAttribute('movie-index'));
-            this.movieService.addReview(movieId, selectedRating);
-            
-            let newRating = this.movieService.getReview(movieId);
-            document.getElementById('ratingValue')!.innerHTML = newRating.toString();
-            document.querySelector('[movie-id="'+movieId+'"]')!.getElementsByClassName('rating-value')[0].innerHTML = newRating.toString();
+            this.updateRating(ele);
         }
+        else if(ele && ele.closest('.movie')) {
+            this.generateMovieDescriptionStructure(ele.closest('.movie')!);
+        }
+    }
+
+    private updateRating(ele: HTMLElement) {
+      
+        let selectedRating = Number(ele.closest('.rating-value')!.getAttribute('value'));
+        let movieId = Number(ele.closest('#movieDetails')!.getAttribute('movie-index'));
+        this.movieService.addReview(movieId, selectedRating);
+        
+        let newRating = this.movieService.getReview(movieId);
+        document.getElementById('ratingValue')!.innerHTML = newRating.toString();
+        document.querySelector('[movie-id="'+movieId+'"]')! .getElementsByClassName('rating-value')[0].innerHTML = newRating.toString();
+       
     }
 
     private generateMovieDescriptionStructure(movieElement: Element ) {
@@ -42,7 +45,7 @@ export class MovieDescription{
         let movieId = Number(movieElement.getAttribute('movie-id'));
         let movieDetails = this.movieService.getMovie(movieId);
         let movieRating = this.movieService.getReview(movieId);
-        let movieDescription = document.getElementById('movieDescription')!;
+        let movieDescription = <HTMLDivElement>document.getElementById('movieDescription')!;
         movieDescription.classList.remove('d-none');
          
         
@@ -64,7 +67,7 @@ export class MovieDescription{
                             <img src="images/${movieDetails.coverImage}">
                         </div>`;
 
-        let element = document.createElement('div');
+        let element = <HTMLDivElement>document.createElement('div');
         element.classList.add('d-flex', 'justify-content-between');
         element.setAttribute('id', 'movieDescriptionContainer');
         element.innerHTML = structure;

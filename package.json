@@ -8,9 +8,15 @@
     "bootstrap": "^4.5.2",
     "font-awesome": "^4.7.0",
     "lite-server": "^2.5.4",
-    "typescript": "^3.9.7"
+    "rxjs": "^6.6.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "ts-loader": "^8.0.2",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
   "scripts": {
     "dev": "lite-server"
   },

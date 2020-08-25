@@ -42,9 +42,13 @@ header {
 .movie-article {
     width: 20%;
     margin-left: 30px;
-    padding: 10px;
+    /* padding: 10px; */
     border: 1px solid #07294d;
-    margin-top: 10px;
+    margin-top: 20px;
+}
+
+.movie-article:hover {
+    box-shadow: 0px 15px 15px #999999;
 }
 
 .movie-article a {
