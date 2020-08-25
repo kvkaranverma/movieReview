@@ -25,7 +25,7 @@ header {
     width: 300px !important;
 }
 
-.add-movie-template #close-movie {
+.add-movie-template #closeMovie {
     position: absolute;
     top: 2px;
     right: 5px;
@@ -65,7 +65,7 @@ ul {
     list-style: none;
 }
 
-#movieDescription {
+#movieDescriptionContainer {
     width: 100%;
     position: fixed;
     top: 0;
@@ -75,18 +75,18 @@ ul {
     background-color: rgba(7, 41, 77, 0.8);
 }
 
-#movieDescription .cross-icon {
+#movieDescriptionContainer .cross-icon {
     font-size: 24px;
 }
 
-#movieDescription #hideDescription {
+#movieDescriptionContainer #hideDescription {
     position: absolute;
     top: 20px;
     right: 20px;
     cursor: pointer;
 }
 
-#movieDescription img {
+#movieDescriptionContainer img {
     width: 80%;
 }
 

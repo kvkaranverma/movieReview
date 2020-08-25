@@ -12,24 +12,10 @@
         <div class="content">
 
             <!-- Add movie template -->
-            <div class="add-movie-template w-auto d-none">
-                <form id="movieForm">
-                    <span id="close-movie">Close</span>
-                    <div class="form-group d-inline">
-                        <label>Name</label>
-                        <input type="text" name="movieName" class="form-control">
-                    </div>
-                    <div class="form-group d-inline">
-                        <label>Cover Image</label>
-                        <input type="text" name="coverImage" class="form-control">
-                    </div>
-                    <div class="form-group d-inline">
-                        <label>Description</label>
-                        <textarea name="description" rows="5" class="form-control"></textarea>
-                    </div>
-                    <input type="submit" id="submitMovie" class="btn btn-success mt-3">
-                </form>
+            <div id="addMovieForm">
+
             </div>
+            
             <!-- Add movie template end -->
 
             <!-- Movie list -->
@@ -41,12 +27,11 @@
             </div>
 
         </div>
-        <div id="movieDescription" class="d-none">
-            <span id="hideDescription">
-                <i class="cross-icon fa fa-times"></i>
-            </span>
-            
+        <div id="movieDetailsTemplate">
+
         </div>
+        
+        <div id="movieForm"></div>
 
         <script src="./dist/app.js" type="module"></script>
     </body>

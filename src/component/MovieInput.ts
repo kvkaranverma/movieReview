@@ -8,19 +8,24 @@ export class MovieInput {
         this.movieService = MovieService.getInstance();
 
         let addMovie = <HTMLButtonElement>document.getElementById('addMovie')!;
-        addMovie.addEventListener('click', function() {
-            let addMovieTemplate = document.getElementsByClassName('add-movie-template')[0];
-            addMovieTemplate.classList.remove('d-none');
-        });
-
-        let closeMovieButton = <HTMLButtonElement>document.getElementById('close-movie')!;
-        closeMovieButton.addEventListener('click', function() {
-            let addMovieTemplate = document.getElementsByClassName('add-movie-template')[0];
-            addMovieTemplate.classList.add('d-none');
-        });
+        addMovie.addEventListener('click', () => this.prepareFormStructure());
         
-        let submitMovie = <HTMLFormElement>document.getElementById('movieForm')!;
-        submitMovie.addEventListener('submit', () => this.addNewMovie(event!, submitMovie));
+        document.addEventListener('click', () => this.addEvents(event!));
+    }
+
+    private addEvents(evt: Event) {
+        let ele = <HTMLElement>evt.target;
+        if(ele && ele.closest('#closeMovie')) {
+            ele.closest('.add-movie-template')!.remove();
+        }
+        else if(ele && ele.closest('#submitMovie')) {
+            let submitMovie = <HTMLFormElement>document.getElementById('movieForm')!;
+            submitMovie.addEventListener('submit', (event) => {
+                event.preventDefault();
+                this.addNewMovie(event, submitMovie);
+                ele.closest('.add-movie-template')!.remove();
+            });
+        }
     }
 
     private addNewMovie(event: Event, submitMovie: HTMLFormElement) {
@@ -33,5 +38,32 @@ export class MovieInput {
         coverImage = "abc.jpg";
         let movie = this.movieService.addMovie({name, coverImage, description});
         MovieList.renderNewelyAddedMovie(movie.newMovie, movie.movieId);
+    }
+
+    private prepareFormStructure() {
+        let structure = `<form id="movieForm">
+                                <span id="closeMovie">Close</span>
+                                <div class="form-group d-inline">
+                                    <label>Name</label>
+                                    <input type="text" name="movieName" class="form-control">
+                                </div>
+                                <div class="form-group d-inline">
+                                    <label>Cover Image</label>
+                                    <input type="text" name="coverImage" class="form-control">
+                                </div>
+                                <div class="form-group d-inline">
+                                    <label>Description</label>
+                                    <textarea name="description" rows="5" class="form-control"></textarea>
+                                </div>
+                                <input type="submit" id="submitMovie" class="btn btn-success mt-3">
+                            </form>`;
+                        
+
+        let element = document.createElement('div');
+        element.classList.add('add-movie-template', 'w-auto');
+        element.innerHTML = structure;
+
+        let movieTemplate = document.getElementById('addMovieForm');
+        movieTemplate!.appendChild(element as HTMLElement);
     }
 }
