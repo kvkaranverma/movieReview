@@ -8,15 +8,20 @@ export class MovieInput {
         this.movieService = MovieService.getInstance();
 
         let addMovie = <HTMLButtonElement>document.getElementById('addMovie')!;
-        addMovie.addEventListener('click', () => this.prepareFormStructure());
+        addMovie.addEventListener('click', () =>  {
+            addMovie.setAttribute('disabled', 'true');
+            this.prepareFormStructure();
+        });
         
         document.addEventListener('click', () => this.addEvents(event!));
     }
 
     private addEvents(evt: Event) {
         let ele = <HTMLElement>evt.target;
+        let addMovie = <HTMLButtonElement>document.getElementById('addMovie')!;
         if(ele && ele.closest('#closeMovie')) {
             ele.closest('.add-movie-template')!.remove();
+            addMovie.removeAttribute('disabled');
         }
         else if(ele && ele.closest('#submitMovie')) {
             let submitMovie = <HTMLFormElement>document.getElementById('movieForm')!;
@@ -24,6 +29,7 @@ export class MovieInput {
                 event.preventDefault();
                 this.addNewMovie(event, submitMovie);
                 ele.closest('.add-movie-template')!.remove();
+                addMovie.removeAttribute('disabled');
             });
         }
     }
