@@ -12,7 +12,7 @@ export class MovieList {
 
     private renderMovieList() {
         this.movies = this.movieService.getMovieList();
-        let movieListContainer = <HTMLDivElement>document.getElementById('movieListContainer')!.getElementsByClassName('movie-list')[0]!;
+        let movieListContainer = (document.getElementById('movieListContainer')! as HTMLDivElement).getElementsByClassName('movie-list')[0]!;
         
         for(let counter = 0; counter < this.movies.length; counter++) {
             let movieRating = this.movieService.getReview(counter);
@@ -41,7 +41,7 @@ export class MovieList {
     }
 
     static renderNewelyAddedMovie(movie: MovieType, movieId: number) {
-        let movieListContainer = <HTMLDivElement>document.getElementById('movieListContainer')!.getElementsByClassName('movie-list')[0]!;
+        let movieListContainer = (document.getElementById('movieListContainer')! as HTMLDivElement).getElementsByClassName('movie-list')[0]!;
         movieListContainer.appendChild(MovieList.generateMovieListStructure(movieId, movie.name, movie.coverImage!));
     }
     

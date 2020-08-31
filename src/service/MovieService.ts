@@ -27,7 +27,7 @@ export class MovieService extends MovieData {
     }
 
     addReview(index: number, ratingIndex: number) {
-        if(!this.movieList[index].review) {
+        if(this.movieList[index] && !this.movieList[index].review) {
             this.movieList[index].review = [0, 0, 0, 0 ,0];
         }
         this.movieList[index].review![ratingIndex - 1]++;
@@ -35,7 +35,7 @@ export class MovieService extends MovieData {
 
     getReview(index: number) {
         
-        let rating = this.movieList[index].review;
+        const rating = this.movieList[index].review;
         if(!rating)
             return 0;
 

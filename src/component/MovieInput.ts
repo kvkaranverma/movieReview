@@ -17,14 +17,14 @@ export class MovieInput {
     }
 
     private addEvents(evt: Event) {
-        let ele = <HTMLElement>evt.target;
-        let addMovie = <HTMLButtonElement>document.getElementById('addMovie')!;
+        let ele = evt.target as HTMLElement;
+        let addMovie = document.getElementById('addMovie')! as HTMLButtonElement;
         if(ele && ele.closest('#closeMovie')) {
             ele.closest('.add-movie-template')!.remove();
             addMovie.removeAttribute('disabled');
         }
         else if(ele && ele.closest('#submitMovie')) {
-            let submitMovie = <HTMLFormElement>document.getElementById('movieForm')!;
+            let submitMovie = document.getElementById('movieForm')! as HTMLFormElement;
             submitMovie.addEventListener('submit', (event) => {
                 event.preventDefault();
                 this.addNewMovie(event, submitMovie);
@@ -36,10 +36,10 @@ export class MovieInput {
 
     private addNewMovie(event: Event, submitMovie: HTMLFormElement) {
         event.preventDefault();
-        let name: string = (<HTMLInputElement>submitMovie.elements.namedItem('movieName'))!.value;
+        let name: string = (submitMovie.elements.namedItem('movieName')! as HTMLInputElement).value;
         
-        let coverImage: string = (<HTMLInputElement>submitMovie.elements.namedItem('coverImage'))!.value;
-        let description: string = (<HTMLInputElement>submitMovie.elements.namedItem('description'))!.value;
+        let coverImage: string = (submitMovie.elements.namedItem('coverImage')! as HTMLInputElement).value;
+        let description: string = (submitMovie.elements.namedItem('description')! as HTMLInputElement).value;
         console.log(name, coverImage, description);
         coverImage = "abc.jpg";
         let movie = this.movieService.addMovie({name, coverImage, description});

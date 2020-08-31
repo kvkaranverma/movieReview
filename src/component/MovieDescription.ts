@@ -10,7 +10,7 @@ export class MovieDescription{
     }
 
     private bindEvents(evt: Event) {
-        let ele = <HTMLElement>evt.target;
+        const ele = evt.target as HTMLElement;
         if(ele && ele.closest('.rating-value')) {
             this.updateRating(ele);
         }
@@ -18,7 +18,7 @@ export class MovieDescription{
             this.generateMovieDescriptionStructure(ele.closest('.movie')!);
         }
         else if(ele && ele.closest('#hideDescription')) {
-            let movieDescription = <HTMLDivElement>document.getElementById('movieDescriptionContainer')!;
+            let movieDescription = document.getElementById('movieDescriptionContainer')! as HTMLDivElement;
             movieDescription.remove();
         }
     }
@@ -41,7 +41,7 @@ export class MovieDescription{
         let movieId = Number(movieElement.getAttribute('movie-id'));
         let movieDetails = this.movieService.getMovie(movieId);
         let movieRating = this.movieService.getReview(movieId);
-        let movieDescription = <HTMLDivElement>document.getElementById('movieDetailsTemplate')!;
+        let movieDescription = document.getElementById('movieDetailsTemplate')! as HTMLDivElement;
        
         let structure = `
                             <span id="hideDescription">
@@ -69,7 +69,7 @@ export class MovieDescription{
                             </div>
                         `;
 
-        let element = <HTMLDivElement>document.createElement('div');
+        let element = document.createElement('div') as HTMLDivElement;
         element.setAttribute('id', 'movieDescriptionContainer')
         element.innerHTML = structure;
         movieDescription.appendChild(element);     
